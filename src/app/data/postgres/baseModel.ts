@@ -63,7 +63,7 @@ export default class BaseModel {
           : { where: query, select, include }
       }
       const instance = await postgresDBModel.findMany(query)
-      if (instance === undefined || instance === null || instance.length === 0) {
+      if (instance === undefined || instance === null) {
         throw new Error(errorKeys.ENTITY_NOT_FOUND)
       }
       return instance
