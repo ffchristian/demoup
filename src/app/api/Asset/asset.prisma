@@ -1,0 +1,18 @@
+model Asset {
+  id                    Int      @id @default(autoincrement())
+  name                  String   @db.VarChar() @default("")
+  extension             String   @db.VarChar() @default("")
+  description           String   @db.VarChar() @default("")
+  type                  typeAsset  
+  location              String   @db.VarChar()
+  active                Boolean @db.Boolean @default(true)
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt @default(now())
+  deleted               Boolean     @db.Boolean @default(false)
+}
+
+enum typeAsset {
+  IMAGE
+  VIDEO
+  DOC
+}

@@ -1,0 +1,5 @@
+model AssetToCategory {
+  assetId              Int
+  categoryId           Int
+  @@id([assetId, categoryId])
+}

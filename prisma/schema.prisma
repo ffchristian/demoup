@@ -1,0 +1,34 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model Asset {
+  id          Int       @id @default(autoincrement())
+  name        String    @default("") @db.VarChar()
+  extension   String    @default("") @db.VarChar()
+  description String    @default("") @db.VarChar()
+  type        typeAsset
+  location    String    @db.VarChar()
+  active      Boolean   @default(true) @db.Boolean
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  deleted     Boolean   @default(false) @db.Boolean
+}
+
+enum typeAsset {
+  IMAGE
+  VIDEO
+  DOC
+}
+model AssetToCategory {
+  assetId    Int
+  categoryId Int
+
+  @@id([assetId, categoryId])
+}
