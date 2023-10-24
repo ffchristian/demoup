@@ -1,0 +1,7 @@
+FROM backend_api_base
+
+ADD ./src /app/src
+
+RUN npm run build
+
+CMD ["pm2-runtime", "./dist/server.js"]

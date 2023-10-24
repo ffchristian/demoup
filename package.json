@@ -1,0 +1,58 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "Christian backend",
+  "main": "./",
+  "license": "ISC",
+  "author": {
+    "name": "your name",
+    "email": "ffchris1@gmail.com",
+    "url": "www.github.com/ffchristian"
+  },
+  "scripts": {
+    "test": "STOP_SERVER_STARTUP='1' API_PORT='3001' jest",
+    "build-ts": "tsc",
+    "build-watch": "tsc -w",
+    "eslint": "eslint 'src/**/*.{js,ts}' --fix",
+    "pg-migrate": "npm run build-prisma-schema && npx prisma migrate dev --name $npm_config_name",
+    "build-prisma-schema": "cat ./prisma/connector.prisma > ./prisma/schema.prisma && cat ./src/**/**/**/*.prisma >> ./prisma/schema.prisma && npx prisma format",
+    "build": "npm run build-prisma-schema && npm run build-ts && npm run eslint && echo Build finished!",
+    "restore-global": "npm install -g typescript eslint typings nodemon pm2",
+    "restore-local": "npm install  && typings i",
+    "restore-all": "npm run restore-global && npm run restore-local",
+    "docker-run": "docker-compose -f docker-compose.yml -f docker-compose.debug.yml build && RUNNING_MODE=development  docker-compose -f docker-compose.yml -f docker-compose.debug.yml up -d --remove-orphans --build --force-recreate",
+    "docker-run:prod": "docker-compose -f docker-compose.yml build && RUNNING_MODE=development docker-compose -f docker-compose.yml up -d --remove-orphans --build --force-recreate"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.6",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/node": "^20.8.7",
+    "@types/supertest": "^2.0.15",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^6.8.0",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-standard-with-typescript": "^39.1.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.2.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.3",
+    "prisma": "^5.4.2",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@fastify/compress": "^6.4.0",
+    "@fastify/cors": "^8.4.0",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/middie": "^8.3.0",
+    "@prisma/client": "^5.4.2",
+    "@types/connect": "^3.4.37",
+    "axios": "^1.5.1",
+    "fastify": "^4.24.3",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

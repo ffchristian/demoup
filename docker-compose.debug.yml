@@ -1,0 +1,11 @@
+version: '3'
+services:
+  backend_api:    
+    build:
+      dockerfile: ./Dockerfile.debug.backend_api
+    image: backend_api_livedebug
+    ports:
+    - "9229:9229"
+    volumes: 
+    - ./src:/app/src
+    - ./dist:/app/dist

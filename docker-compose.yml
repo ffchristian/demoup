@@ -1,0 +1,85 @@
+version: '3'
+services:
+  backend_api_base:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.all.backend_api_base
+      args: 
+        POSTGRES_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/demoUp?schema=${POSTGRES_SCHEMA:-asset_schema}
+    image: backend_api_base
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    networks:
+      - backend-net
+  backend_api:    
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.release.backend_api
+    image: backend_api
+    depends_on:
+      - backend_api_base
+      - postgres
+    links:
+      - postgres:postgres
+    networks: 
+    - backend-net
+    ports:    
+    - "3000:3000"
+    environment:
+      JWT_TOKEN_SECRECT: ${JWT_TOKEN_SECRECT:-&@changeme@&}
+      API_PORT: 3000
+      POSTGRES_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@${POSTGRES_HOST:-postgres}:5432/demoUp?schema=${POSTGRES_SCHEMA:-asset_schema}
+  postgres:
+    container_name: postgres_container_backend
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-net
+    restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin_demoUp_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+        - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    links:
+      - postgres:postgres
+    networks:
+      - backend-net
+  #   restart: unless-stopped
+  pg-migrate:
+    image: backend_api_base
+    container_name: backend-postgres-pg-migrate
+    entrypoint: npx prisma migrate deploy
+    depends_on:
+      - postgres
+      - backend_api_base
+    links:
+      - postgres:postgres
+    networks:
+      - backend-net
+
+
+volumes:
+  db-data:
+  pgadmin:
+  cache:
+    driver: local
+
+networks: 
+  backend-net: 
+    driver: bridge
