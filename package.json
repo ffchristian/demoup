@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "STOP_SERVER_STARTUP='1' API_PORT='3001' jest",
+    "postinstall": "npx husky install",
     "build-ts": "tsc",
     "build-watch": "tsc -w",
     "eslint": "eslint 'src/**/*.{js,ts}' --fix",
